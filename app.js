@@ -17,21 +17,11 @@ const demoTeams = [
 
 let teams = demoTeams.map(t => ({...t}));
 if (!supabase) {
-  try { const saved = sessionStorage.getItem('ace-demo-teams'); if (saved) teams = JSON.parse(saved); } catch { /* Use sample rows if demo storage is unavailable. */ }
+  try { const saved = sessionStorage.getItem('ace-demo-teams'); if (saved) teams = JSON.parse(saved); } catch { /* sample data fallback */ }
 }
 function saveDemoTeams() {
   if (supabase) return;
-  try { sessionStorage.setItem('ace-demo-teams', JSON.stringify(teams)); } catch { /* Keep working in memory when storage is disabled. */ }
-}
-if (!supabase) {
-  try {
-    const saved = sessionStorage.getItem('ace-demo-teams');
-    if (saved) teams = JSON.parse(saved);
-  } catch { /* Use built-in demo data when session storage is unavailable. */ }
-}
-function saveDemoTeams() {
-  if (supabase) return;
-  try { sessionStorage.setItem('ace-demo-teams', JSON.stringify(teams)); } catch { /* Demo still works in memory. */ }
+  try { sessionStorage.setItem('ace-demo-teams', JSON.stringify(teams)); } catch { /* memory fallback */ }
 }
 let isAdmin = false;
 let toastTimer;
