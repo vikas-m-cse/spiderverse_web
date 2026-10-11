@@ -47,7 +47,7 @@ function setMode(s,live=false){$('connectionText').textContent=s;const dot=docum
 function render(){
  const list=sorted(),q=$('teamSearch').value.trim().toLowerCase(),shown=list.filter(t=>String(t.team_name).toLowerCase().includes(q)||code(t).toLowerCase().includes(q));
  $('teamCount').textContent=String(teams.length).padStart(2,'0');
- $('roundsCompleted').innerHTML=(teams.length && teams.every(t=>Number(t.round1_score||0)>=0 && Number(t.round2_score||0)>=0) ? '02' : '00')+'<span class="stat-small">/02</span>';
+ $('roundsCompleted').innerHTML='02<span class="stat-small">/02</span>';
  $('totalPoints').textContent=number(teams.reduce((n,t)=>n+score(t),0));
  $('resultsCount').innerHTML=shown.length.toString().padStart(2,'0')+' TEAMS <b>·</b> SORTED BY FINAL SCORE';
  $('leaderboardBody').innerHTML=shown.map(t=>{const rank=list.findIndex(x=>x.id===t.id)+1,initials=String(t.team_name||'T').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase();return '<tr><td class="rank-cell"><span class="rank-number '+(rank===1?'top-one':'')+'">'+String(rank).padStart(2,'0')+'</span><span class="team-id">ID / '+safe(code(t))+'</span></td><td><div class="team-cell"><span class="team-avatar">'+safe(initials)+'</span><span>'+safe(t.team_name)+'</span>'+(rank===1?'<span class="rank-badge">LEADING</span>':'')+'</div></td><td class="numeric">'+number(t.round1_score)+'</td><td class="numeric">'+number(t.round2_score)+'</td><td class="numeric final-score">'+number(score(t))+'</td></tr>'}).join('');
