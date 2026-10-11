@@ -41,11 +41,15 @@ with check (exists (select 1 from public.admins a where a.user_id=(select auth.u
 drop policy if exists "Users can read own admin role" on public.admins;
 create policy "Users can read own admin role" on public.admins for select to authenticated using (user_id=(select auth.uid()));
 
+-- Do not allow captains or ordinary authenticated users to modify metadata columns.
+-- Table grants allow score-column updates only; RLS still requires staff membership.
+revoke update on public.teams from anon, authenticated;
+grant update (round1_score, round2_score) on public.teams to authenticated;
+
 revoke insert, update, delete on public.admins from anon, authenticated;
 grant select on public.admins to authenticated;
 grant select on public.teams to anon, authenticated;
 grant insert on public.teams to authenticated;
-grant update (round1_score, round2_score) on public.teams to authenticated;
 grant select on public.leaderboard to anon, authenticated;
 
 -- Bootstrap the initial admin after creating that account in Supabase Authentication:
