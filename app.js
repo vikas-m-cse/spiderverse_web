@@ -17,6 +17,13 @@ const demoTeams = [
 
 let teams = demoTeams.map(t => ({...t}));
 if (!supabase) {
+  try { const saved = sessionStorage.getItem('ace-demo-teams'); if (saved) teams = JSON.parse(saved); } catch { /* Use sample rows if demo storage is unavailable. */ }
+}
+function saveDemoTeams() {
+  if (supabase) return;
+  try { sessionStorage.setItem('ace-demo-teams', JSON.stringify(teams)); } catch { /* Keep working in memory when storage is disabled. */ }
+}
+if (!supabase) {
   try {
     const saved = sessionStorage.getItem('ace-demo-teams');
     if (saved) teams = JSON.parse(saved);
