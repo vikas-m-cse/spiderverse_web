@@ -50,6 +50,7 @@ revoke insert, update, delete on public.admins from anon, authenticated;
 grant select on public.admins to authenticated;
 grant select on public.teams to anon, authenticated;
 grant insert on public.teams to authenticated;
+grant update (round1_score, round2_score) on public.teams to authenticated;
 grant select on public.leaderboard to anon, authenticated;
 
 -- Bootstrap the initial admin after creating that account in Supabase Authentication:
