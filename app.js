@@ -59,7 +59,7 @@ async function checkSession(){
  showAdmin(false)
 }
 async function registerTeam(e){
- e.preventDefault();const name=$('teamName').value.trim().replace(/\\s+/g,' ');
+ e.preventDefault();const name=$('teamName').value.trim().replace(/\s+/g,' ');
  if(name.length<2){message('registerMessage','Team name must be at least 2 characters.',true);return}
  if(teams.some(t=>String(t.team_name).trim().toLowerCase()===name.toLowerCase())){message('registerMessage','That team name already exists.',true);return}
  if(!supabase){teams.push({id:crypto.randomUUID(),team_name:name,round1_score:0,round2_score:0,created_at:new Date().toISOString()});render();close('registerDialog');$('registerForm').reset();toast('Added to this demo only — not saved to Supabase.');return}
