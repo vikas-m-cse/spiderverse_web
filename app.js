@@ -15,7 +15,17 @@ const demoTeams = [
   ['G27D9E76','Byte Bandits',74,78],['H18E0F87','Null Pointers',70,68]
 ].map(([id,team_name,round1_score,round2_score])=>({id,team_name,round1_score,round2_score,created_at:new Date().toISOString()}));
 
-let teams = demoTeams;
+let teams = demoTeams.map(t => ({...t}));
+if (!supabase) {
+  try {
+    const saved = sessionStorage.getItem('ace-demo-teams');
+    if (saved) teams = JSON.parse(saved);
+  } catch { /* Use built-in demo data when session storage is unavailable. */ }
+}
+function saveDemoTeams() {
+  if (supabase) return;
+  try { sessionStorage.setItem('ace-demo-teams', JSON.stringify(teams)); } catch { /* Demo still works in memory. */ }
+}
 let isAdmin = false;
 let toastTimer;
 const $ = id => document.getElementById(id);
@@ -62,7 +72,7 @@ async function registerTeam(e){
  e.preventDefault();const name=$('teamName').value.trim().replace(/\s+/g,' ');
  if(name.length<2){message('registerMessage','Team name must be at least 2 characters.',true);return}
  if(teams.some(t=>String(t.team_name).trim().toLowerCase()===name.toLowerCase())){message('registerMessage','That team name already exists.',true);return}
- if(!supabase){teams.push({id:crypto.randomUUID(),team_name:name,round1_score:0,round2_score:0,created_at:new Date().toISOString()});render();close('registerDialog');$('registerForm').reset();toast('Added to this demo only — not saved to Supabase.');return}
+ if(!supabase){teams.push({id:crypto.randomUUID(),team_name:name,round1_score:0,round2_score:0,created_at:new Date().toISOString()});saveDemoTeams();render();close('registerDialog');$('registerForm').reset();toast('Added to this demo only — not saved to Supabase.');return}
  const {data:{user}}=await supabase.auth.getUser();
  if(!user){message('registerMessage','For real registration, the captain must first sign in with Supabase Auth.',true);return}
  const {error}=await supabase.from('teams').insert({team_name:name,captain_id:user.id});
